@@ -90,7 +90,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <li>Tornado/Funnel Cloud</li>
 </ul></li>
 </ul>
-<p>The weather stations are uniquely identified by the columns <code>STN---</code> and <code>WBAN</code>, and the date is identified by the columns <code>YEAR</code> and <code>MODA</code> (<strong>mo</strong>nth and <strong>da</strong>y).</p>
+<p>The weather stations are uniquely identified by the columns <code>STN---</code> and <code>WBAN</code>, and the date is identified by the columns <code>YEAR</code> and <code>MODA</code> (month and day).</p>
 <p>Missing codes for the weather variables are a bit tricky to deal with, so the <code>cleanMetrics</code> function in the <a href="#R">example R code</a> turns them into <code>NA</code>s for easier handling.</p></li>
 <li><p><strong>Weather station info data set</strong></p>
 <p>This data set contains information on the weather stations, including their latitude and longitude coordinates.</p>
@@ -100,17 +100,16 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 </div>
 <div id="directory-structure" class="section level4">
 <h4>Directory structure</h4>
-<p>The data files and the R code should live in a strict directory structure (see below). The strict structure makes the R functions easier to use by requiring the user to specify one directory instead of many directories and file paths. The directory you’ll need to specify is the directory of this project, which should end in “WeatherData” if you haven’t changed the name. I’ll refer to this path as <span style="color:purple"><em>projDir</em></span> (for “project directory”) to keep it consistent with the <code>projDir</code> argument in each of the main R functions.</p>
+<p>The data files and the R code should live in a strict directory structure (see below). The strict structure makes the R functions easier to use by requiring the user to specify one directory instead of many directories and file paths. The directory you’ll need to specify is the directory of this project. I’ll refer to this path as <span style="color:purple"><em>projDir</em></span> (for “project directory”) to keep it consistent with the <code>projDir</code> argument in each of the main R functions.</p>
 <p>The structure is as follows:</p>
 <ul>
 <li><span style="color:purple"><em>projDir</em>/</span> - project directory</li>
 <li><span style="color:purple"><em>projDir</em>/R/</span> - R functions</li>
-<li><span style="color:purple"><em>projDir</em>/rawData/</span> - raw data to be used in project</li>
+<li><span style="color:purple"><em>projDir</em>/rawData/</span> - raw data to be used in project (not yet created)</li>
 <li><span style="color:purple"><em>projDir</em>/rawData/gsod_<em>yyyy</em>/</span> - weather metric files (*.op.gz), by station for year <em>yyyy</em> (not yet created)</li>
 <li><span style="color:purple"><em>projDir</em>/rawData/gsod_<em>yyyy</em>/<em>ssssss</em>-<em>wwwww</em>-<em>yyyy</em>.op.gz</span> - weather metric file for station with identifiers <em>ssssss</em> (<code>STN---</code>) and <em>wwwww</em> (<code>WBAN</code>) for year <em>yyyy</em> (not yet downloaded)
 <ul>
 <li>E.g., the file 702035-26704-2006.op.gz would be for the station with a <code>STN---</code> identifier of 702035 and a <code>WBAN</code> identifier of 26704 in year 2006</li>
-<li>Files may be *.op.gz, *.op, *.os.gz, or *.os depending on method of download</li>
 </ul></li>
 <li><span style="color:purple"><em>projDir</em>/rawData/isd-history.csv</span> - weather station info file (*.csv) (not yet downloaded)</li>
 </ul>
@@ -118,7 +117,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <div id="instructions" class="section level4">
 <h4><a name="instructions"></a> Instructions</h4>
 <ol style="list-style-type: decimal">
-<li><p>Download the weather metrics data from FTP site (see <a href="#sourcesAndResources">Sources and resources</a>) into <span style="color:purple"><em>projDir</em>/rawData/</span> using one of the options below. Each option requires that you specify your email address to pull data from the FTP. You don’t have to create an account beforehand. There’s one *.tar file for each year of data, and 9000+ *os.gz files (one for each station) within each *.tar file.</p>
+<li><p>Download the weather metrics data from FTP site (see <a href="#sourcesAndResources">Sources and resources</a>) into <span style="color:purple"><em>projDir</em>/rawData/</span> using one of the options below. Each option requires that you specify your email address to pull data from the FTP. You don’t have to create an account beforehand. There’s one *.tar file for each year of data, and 9000+ *op.gz files (one for each station) within each *.tar file.</p>
 <p><a name="op1"></a><strong>Option 1:</strong> Use function <code>downloadMetrics</code>, which downloads the individual station files (*.op.gz) from the FTP site, with the option of only downloading a certain number of files (<code>nFiles</code> argument). This is far from the fastest solution if you want to download a lot of data, but it will allow you to quickly import a handful of files for testing or debugging. (See <a href="#R">example R code</a>.)</p>
 <p><a name="op2"></a><strong>Option 2:</strong> Download and unpack *.tar from the FTP site using the code below in Command Prompt (Windows) or Terminal (OSX). In the code, replace the example project directory (<span style="color:purple">C:/Users/UserName/SomeOtherFolder/WeatherData</span>) with your project directory (i.e., the <code>projDir</code> path), the year (2006) with your desired year, and the email address (<a href="mailto:YourEmailAddress@domain">YourEmailAddress@domain</a>) with your email address. The last line of code was written on OSX, but it should work on Windows if you have MinGW/MSYS or Cygwin installed. This option is magnitudes faster than <a href="#op1">Option 1</a> but requires that you download an entire year of data at once.</p>
 <pre><code>mkdir C:\Users\UserName\SomeOtherFolder\WeatherData\rawData\gsod_2006
