@@ -5,13 +5,6 @@ readGsodFwf <- function(fwf)
     ###########################################################################
     
     
-    if (FALSE)
-    {
-        fwf <- paste0("C:/analytics/projects/OneOffs/RetirementIndex/",
-                      "data/clim/gsod_2013/all/007018-99999-2013.op")
-        fwf <- "W:/econ/WeatherDataClean/data/689350-99999-2012.op"
-    }
-    
     widths <- c(6, 1, 5, 2, 4, 4, 2, 6, 1, 2, 2, 6, 1, 2, 2, 6, 1, 2, 2,
                 6, 1, 2, 2, 5, 1, 2, 2, 5, 1, 2, 2, 5, 2, 5, 2, 6, 1, 1,
                 6, 1, 1, 5, 1, 1, 5, 2, 6)
