@@ -1,0 +1,194 @@
+# Using weather data in R
+### <span style="color:gray">Calculating the number of pleasant days per year</span>
+
+#### Motivation
+
+As part of a recent analysis, the Zillow Real Estate Research team estimated of the number of pleasant days per year for every city in the US. Because the raw weather data we used is rich and has many potential uses, we decided to share our [R](http://www.r-project.org/) code for the benefit of anyone who would find it useful to their research.
+
+Our approach was very much inspired by Kelly Norton's blog post [The Pleasant Places to Live](http://www.kellegous.com/j/2014/02/03/pleasant-places/). Thank you, Kelly!
+
+
+#### Brief explanation of the data
+
+The Global Summary of Day (GSOD) data is just one of many data products by the National Oceanic and Atmospheric Administration (NOAA). There are two data sets that must be joined in order to conduct a meaningful analysis using the data:
+
+1. **Weather metrics data set**
+
+    This is the bulk of the data, and it's what you'll spend the most time downloading, importing, and cleaning. It contains the following metrics, which are available at the daily level for each of the 9000+ weather stations:
+
+    - Mean temperature (.1 Fahrenheit)
+    - Mean dew point (.1 Fahrenheit)
+    - Mean sea level pressure (.1 mb)
+    - Mean station pressure (.1 mb)
+    - Mean visibility (.1 miles)
+    - Mean wind speed (.1 knots)
+    - Maximum sustained wind speed (.1 knots)
+    - Maximum wind gust (.1 knots)
+    - Maximum temperature (.1 Fahrenheit)
+    - Minimum temperature (.1 Fahrenheit)
+    - Precipitation amount (.01 inches)
+    - Snow depth (.1 inches)
+    - Indicator for occurrence of:
+        - Fog
+        - Rain or Drizzle
+        - Snow or Ice Pellets
+        - Hail
+        - Thunder
+        - Tornado/Funnel Cloud
+
+    The weather stations are uniquely identified by the columns `STN---` and `WBAN`, and the date is identified by the columns `YEAR` and `MODA` (**mo**nth and **da**y).
+
+    Missing codes for the weather variables are a bit tricky to deal with, so the `cleanMetrics` function in the [example R code](#R) turns them into `NA`s for easier handling.
+
+
+2. **Weather station info data set**
+
+    This data set contains information on the weather stations, including their latitude and longitude coordinates.
+
+    The weather stations are uniquely identified by the columns `USAF` and `WBAN`. `WBAN` matches with `WBAN` in the weather metrics data set, and `USAF` matches with `STN---`. This is a bit confusing, but don't worry: the `mergeForLatLon` function performs this merge for you.
+
+    The start and end dates of operation for each weather station are specified in the `START` and `END` columns.
+
+
+#### Directory structure
+
+The data files and the R code should live in a strict directory structure (see below). The strict structure makes the R functions easier to use by requiring the user to specify one directory instead of many directories and file paths. The directory you'll need to specify is the directory of this project, which should end in "WeatherData" if you haven't changed the name. I'll refer to this path as <span style="color:purple">*projDir*</span> (for "project directory") to keep it consistent with the `projDir` argument in each of the main R functions.
+
+The structure is as follows:
+
+- <span style="color:purple">*projDir*/</span> - project directory
+- <span style="color:purple">*projDir*/R/</span> - R functions
+- <span style="color:purple">*projDir*/rawData/</span> - raw data to be used in project
+- <span style="color:purple">*projDir*/rawData/gsod_*yyyy*/</span> - weather metric files (\*.op.gz), by station for year *yyyy* (not yet created)
+- <span style="color:purple">*projDir*/rawData/gsod_*yyyy*/*ssssss*-*wwwww*-*yyyy*.op.gz</span> - weather metric file for station with identifiers *ssssss* (`STN---`) and *wwwww* (`WBAN`) for year *yyyy* (not yet downloaded)
+    - E.g., the file 702035-26704-2006.op.gz would be for the station with a `STN---` identifier of 702035 and a `WBAN` identifier of 26704 in year 2006
+    - Files may be \*.op.gz, \*.op, \*.os.gz, or \*.os depending on method of download
+- <span style="color:purple">*projDir*/rawData/isd-history.csv</span> - weather station info file (\*.csv) (not yet downloaded)
+
+
+#### <a name="instructions"></a> Instructions
+
+1. Download the weather metrics data from FTP site (see [Sources and resources](#sourcesAndResources)) into <span style="color:purple">*projDir*/rawData/</span> using one of the options below. Each option requires that you specify your email address to pull data from the FTP. You don't have to create an account beforehand. There's one \*.tar file for each year of data, and 9000+ \*os.gz files (one for each station) within each \*.tar file.
+
+    <a name="op1"></a>**Option 1:** Use function `downloadMetrics`, which downloads the individual station files (\*.op.gz) from the FTP site, with the option of only downloading a certain number of files (`nFiles` argument). This is far from the fastest solution if you want to download a lot of data, but it will allow you to quickly import a handful of files for testing or debugging. (See [example R code](#R).)
+    
+    <a name="op2"></a>**Option 2:** Download and unpack \*.tar from the FTP site using the code below in Command Prompt (Windows) or Terminal (OSX). In the code, replace the example project directory (<span style="color:purple">C:/Users/UserName/SomeOtherFolder/WeatherData</span>) with your project directory (i.e., the `projDir` path), the year (2006) with your desired year, and the email address (YourEmailAddress@domain) with your email address. The last line of code was written on OSX, but it should work on Windows if you have MinGW/MSYS or Cygwin installed. This option is magnitudes faster than [Option 1](#op1) but requires that you download an entire year of data at once. 
+
+    ```
+    mkdir C:\Users\UserName\SomeOtherFolder\WeatherData\rawData\gsod_2006
+    cd C:\Users\UserName\SomeOtherFolder\WeatherData\rawData
+    ftp
+    open ftp.ncdc.noaa.gov
+    ftp
+    YourEmailAddress@domain
+    cd /pub/data/gsod/2006
+    get gsod_2006.tar
+    bye
+    tar -xjf gsod_2006.tar -C gsod_2006/
+    ```
+    
+2. Use main R functions to read the weather data, clean it, calculate the number of pleasant days per year, and merge with station info data set to get latitude and longitude coordinates. See [example R code](#R).
+
+
+#### <a name="sourcesAndResources"></a> Sources and resources
+
+* NOAA GSOD main FTP site: [ftp://ftp.ncdc.noaa.gov/pub/data/gsod/](ftp://ftp.ncdc.noaa.gov/pub/data/gsod/)
+* NOAA GSOD data for year 2006 (replace year with year of interest): [ftp://ftp.ncdc.noaa.gov/pub/data/gsod/2006/](ftp://ftp.ncdc.noaa.gov/pub/data/gsod/2006/)
+* NOAA GSOD README: [ftp://ftp.ncdc.noaa.gov/pub/data/gsod/readme.txt](ftp://ftp.ncdc.noaa.gov/pub/data/gsod/readme.txt)
+* NOAA GSOD station info file: [ftp://ftp.ncdc.noaa.gov/pub/data/gsod/isd-history.csv](ftp://ftp.ncdc.noaa.gov/pub/data/gsod/isd-history.csv) 
+
+
+#### <a name="R"></a>Example R code
+
+To run the main R functions, you'll need to install the packages `data.table`, `foreach`, and `doParallel` if you haven't done so. If you'd like to use [Option 1](#op1) to download the weather metric data files, you'll also need to install `RCurl`.
+
+```{r eval = FALSE}
+# Define project directory and years you want to download and play with
+projDir <- "YourProjectDirectory"
+yrs <- 2012:2013
+
+# Source main functions
+mainFuns <- dir(file.path(projDir, "R", "main"), "\\.R", full.names = TRUE)
+invisible(sapply(mainFuns, source))
+
+# Download data for specified years (Option 1 for downloading files). Specify 
+# nFiles for testing. If you get the error "Got a 530 ftp-server response when
+# 220 was expected", wait a few seconds and try again. If it doesn't work after
+# a few attempts, narrow your download to one year at a time if you're trying to
+# pull for multiple years.
+email <- "YourEmailAddress@domain"
+nFiles <- 10
+fwfs <- downloadMetrics(yrs, projDir, email, nFiles)
+
+# Download station info file
+downloadStationInfo(projDir)
+
+# Calculate pleasant days per year for each weather station
+metricsRaw <- readMetrics(yrs, projDir)  # Read in data
+metricsClean <- cleanMetrics(metricsRaw, projDir)  # Clean data
+pleasant <- calcPleasantDays(metricsClean, projDir)  # Calculate pleasant days
+latlon <- mergeForLatLon(pleasant, projDir)  # Get lat/lon coords
+
+head(latlon)
+```
+
+
+**T-SQL bonus code:** If you save the raw data (the `metricsRaw` object in the R code above) to a SQL database, then you can calculate the number of pleasant days by weather station by using the T-SQL code below. Let `YourDbName` be the name of your database, `WeatherStationMetricsRaw` be the name of your weather metrics table (again, `metricsRaw` from above), and `WeatherStations` be the name of the station info table (i.e., <span style="color:purple">*projDir*/rawData/isd-history.csv</span>).
+
+```sql
+-- Declare variables for data pull.
+DECLARE @YearStart INT = 2011;
+DECLARE @YearEnd INT = 2013;
+ 
+-- Declare variables for pleasant days definition.
+DECLARE @MeanMin FLOAT = 55;  -- Lower limit on mean temp (TEMP).
+DECLARE @MeanMax FLOAT = 75;  -- Upper limit on mean temp (TEMP).
+DECLARE @MinMin FLOAT = 45;   -- Lower limit on min temp (MIN).
+DECLARE @MaxMax FLOAT = 85;   -- Upper limit on max temp (MAX).
+ 
+-- Delete temporary tables, if they exist (in the case of multiple runs).
+IF OBJECT_ID('tempdb..#T1') IS NOT NULL DROP TABLE #T1
+IF OBJECT_ID('tempdb..#T2') IS NOT NULL DROP TABLE #T2
+ 
+-- Determine whether a day was pleasant at the station level.
+SELECT STN, WBAN, [YEAR], MODA
+     , CASE
+           WHEN TEMP  = 9999.9  -- Code for missing.
+             OR [MIN] = 9999.9  -- Code for missing.
+             OR [MAX] = 9999.9  -- Code for missing.
+           THEN NULL
+           WHEN (TEMP BETWEEN @MeanMin AND @MeanMax)
+            AND [MIN] >= @MinMin
+            AND [MAX] <= @MaxMax
+            AND (PRCP = 0 OR PRCP = 99.99)  -- 99.99 is code for no significant precip.
+            AND (SNDP = 0 OR SNDP = 999.9)  -- 999.9 is code for no significant snow.
+            AND FRSHTT IN (0, 100000)       -- Exludes rain/drizzle, snow/ice pellets, hail, thunder, and tornado/funnel clouds.
+           THEN 1 ELSE 0
+       END AS Pleasant
+  INTO #T1
+  FROM YourDbName.dbo.WeatherStationMetricsRaw
+ WHERE [YEAR] BETWEEN @YearStart AND @YearEnd
+   AND MODA != 229
+ 
+-- Take average, grouping by station and day of year.
+-- Do this to take missing days into account.
+SELECT STN, WBAN, MODA
+     , AVG(CAST(Pleasant AS FLOAT)) AS PleasantAvg  -- NULLs are ignored.
+  INTO #T2
+  FROM #T1
+ GROUP BY STN, WBAN, MODA
+ 
+-- Aggregate to station.
+-- Join with station info for coords.
+-- Remove stations with incomplete pleasant days data or bad coords.
+SELECT p.STN, p.WBAN, ws.LAT, ws.LON
+     , SUM(p.PleasantAvg) AS PleasantPerYear
+  FROM #T2 AS p
+  JOIN YourDbName.dbo.WeatherStations AS ws
+       ON  p.STN  = ws.USAF
+       AND p.WBAN = ws.WBAN
+ WHERE (ws.LAT IS NOT NULL AND ws.LON IS NOT NULL)
+   AND NOT(ws.LAT = 0 AND ws.LON = 0)
+ GROUP BY p.STN, p.WBAN, ws.LAT, ws.LON
+HAVING COUNT(p.PleasantAvg) = 365
+```
