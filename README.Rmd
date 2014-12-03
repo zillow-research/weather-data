@@ -58,7 +58,7 @@ The structure is as follows:
 
 - <span style="color:purple">*projDir*/</span> - project directory
 - <span style="color:purple">*projDir*/R/</span> - R functions
-- <span style="color:purple">*projDir*/rawData/</span> - raw data to be used in project
+- <span style="color:purple">*projDir*/rawData/</span> - raw data to be used in project (not yet created)
 - <span style="color:purple">*projDir*/rawData/gsod_*yyyy*/</span> - weather metric files (\*.op.gz), by station for year *yyyy* (not yet created)
 - <span style="color:purple">*projDir*/rawData/gsod_*yyyy*/*ssssss*-*wwwww*-*yyyy*.op.gz</span> - weather metric file for station with identifiers *ssssss* (`STN---`) and *wwwww* (`WBAN`) for year *yyyy* (not yet downloaded)
     - E.g., the file 702035-26704-2006.op.gz would be for the station with a `STN---` identifier of 702035 and a `WBAN` identifier of 26704 in year 2006
