@@ -6,11 +6,11 @@ cleanMetrics <- function(
 
 {
     # ######################################################################### 
-    # Recode missing values in NOAA GSOD data.
+    # Recode missing values in NOAA GSOD data and subset for relevant columns.
     # 
     # Input: raw data (data.table).
     # 
-    # Output: cleaned data (data.table).
+    # Output: cleaned data (data.table). 
     # #########################################################################
     
     
