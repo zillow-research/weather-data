@@ -16,6 +16,11 @@ downloadStationInfo <- function(projDir, isDebug = TRUE)
     e <- environment()
     invisible(sapply(helpers, sys.source, envir = e))
     
+    # Create folder for raw data if it doesn't already exist
+    dirRawData <- file.path(projDir, "rawData")
+    dir.create(dirRawData, showWarnings = FALSE)
+    
+    # Download file
     if (isDebug) debugCat(fun, "downloading station info file...")
     pathFtp <- 'ftp://ftp.ncdc.noaa.gov/pub/data/gsod/isd-history.csv'
     pathLocal <- file.path(projDir, "rawData", gsub(".*/", "", pathFtp))

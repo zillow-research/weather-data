@@ -36,10 +36,9 @@ downloadMetricsYear <- function(
     fwfsFtp <- paste0(gsodUrl, strsplit(fwfsFtpDirty, "(\r){0,1}\n")[[1]])
     fwfsFtp <- fwfsFtp[grepl("\\.op\\.gz", fwfsFtp)]  # Exclude .tar file
     
-    # Create folder for year
-    if (isDebug) debugCat(fun, "creating folder...")
+    # Create folder for year (and for raw data if it doesn't already exist)
     dirYear <- file.path(projDir, "rawData", paste0("gsod_", yr))
-    dir.create(dirYear, showWarnings = FALSE)
+    dir.create(dirYear, showWarnings = FALSE, recursive = TRUE)
     
     # Determine which files have already been downloaded. Don't download them 
     # again. Create data.frame of downloading information (e.g., from/to paths 

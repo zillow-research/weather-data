@@ -36,7 +36,7 @@ The Global Summary of Day (GSOD) data is just one of many data products by the N
         - Thunder
         - Tornado/Funnel Cloud
 
-    The weather stations are uniquely identified by the columns `STN---` and `WBAN`, and the date is identified by the columns `YEAR` and `MODA` (**mo**nth and **da**y).
+    The weather stations are uniquely identified by the columns `STN---` and `WBAN`, and the date is identified by the columns `YEAR` and `MODA` (month and day).
 
     Missing codes for the weather variables are a bit tricky to deal with, so the `cleanMetrics` function in the [example R code](#R) turns them into `NA`s for easier handling.
 
@@ -52,7 +52,7 @@ The Global Summary of Day (GSOD) data is just one of many data products by the N
 
 #### Directory structure
 
-The data files and the R code should live in a strict directory structure (see below). The strict structure makes the R functions easier to use by requiring the user to specify one directory instead of many directories and file paths. The directory you'll need to specify is the directory of this project, which should end in "WeatherData" if you haven't changed the name. I'll refer to this path as <span style="color:purple">*projDir*</span> (for "project directory") to keep it consistent with the `projDir` argument in each of the main R functions.
+The data files and the R code should live in a strict directory structure (see below). The strict structure makes the R functions easier to use by requiring the user to specify one directory instead of many directories and file paths. The directory you'll need to specify is the directory of this project. I'll refer to this path as <span style="color:purple">*projDir*</span> (for "project directory") to keep it consistent with the `projDir` argument in each of the main R functions.
 
 The structure is as follows:
 
@@ -62,13 +62,12 @@ The structure is as follows:
 - <span style="color:purple">*projDir*/rawData/gsod_*yyyy*/</span> - weather metric files (\*.op.gz), by station for year *yyyy* (not yet created)
 - <span style="color:purple">*projDir*/rawData/gsod_*yyyy*/*ssssss*-*wwwww*-*yyyy*.op.gz</span> - weather metric file for station with identifiers *ssssss* (`STN---`) and *wwwww* (`WBAN`) for year *yyyy* (not yet downloaded)
     - E.g., the file 702035-26704-2006.op.gz would be for the station with a `STN---` identifier of 702035 and a `WBAN` identifier of 26704 in year 2006
-    - Files may be \*.op.gz, \*.op, \*.os.gz, or \*.os depending on method of download
 - <span style="color:purple">*projDir*/rawData/isd-history.csv</span> - weather station info file (\*.csv) (not yet downloaded)
 
 
 #### <a name="instructions"></a> Instructions
 
-1. Download the weather metrics data from FTP site (see [Sources and resources](#sourcesAndResources)) into <span style="color:purple">*projDir*/rawData/</span> using one of the options below. Each option requires that you specify your email address to pull data from the FTP. You don't have to create an account beforehand. There's one \*.tar file for each year of data, and 9000+ \*os.gz files (one for each station) within each \*.tar file.
+1. Download the weather metrics data from FTP site (see [Sources and resources](#sourcesAndResources)) into <span style="color:purple">*projDir*/rawData/</span> using one of the options below. Each option requires that you specify your email address to pull data from the FTP. You don't have to create an account beforehand. There's one \*.tar file for each year of data, and 9000+ \*op.gz files (one for each station) within each \*.tar file.
 
     <a name="op1"></a>**Option 1:** Use function `downloadMetrics`, which downloads the individual station files (\*.op.gz) from the FTP site, with the option of only downloading a certain number of files (`nFiles` argument). This is far from the fastest solution if you want to download a lot of data, but it will allow you to quickly import a handful of files for testing or debugging. (See [example R code](#R).)
     
