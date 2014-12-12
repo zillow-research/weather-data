@@ -158,9 +158,15 @@ HAVING COUNT(p.PleasantAvg) = 365
 
 #### <a name="sourcesAndResources"></a> Sources and resources
 
-| Site or file description                                          | FTP link                                              | Non-FTP link                                            |
-|-------------------------------------------------------------------|-------------------------------------------------------|---------------------------------------------------------|
-| NOAA GSOD main site                                               | ftp://ftp.ncdc.noaa.gov/pub/data/gsod/                | http://www1.ncdc.noaa.gov/pub/data/gsod/                |
-| NOAA GSOD data for year 2006 (replace year with year of interest) | ftp://ftp.ncdc.noaa.gov/pub/data/gsod/2006/           | http://www1.ncdc.noaa.gov/pub/data/gsod/2006            |
-| NOAA GSOD README                                                  | ftp://ftp.ncdc.noaa.gov/pub/data/gsod/readme.txt      | http://www1.ncdc.noaa.gov/pub/data/gsod/readme.txt      |
-| NOAA GSOD station info file                                       | ftp://ftp.ncdc.noaa.gov/pub/data/gsod/isd-history.csv | http://www1.ncdc.noaa.gov/pub/data/gsod/isd-history.csv |
+- NOAA GSOD main site
+    - FTP: ftp://ftp.ncdc.noaa.gov/pub/data/gsod/
+    - Non-FTP: http://www1.ncdc.noaa.gov/pub/data/gsod/
+- NOAA GSOD data for year 2006 (replace year with year of interest)
+    - FTP: ftp://ftp.ncdc.noaa.gov/pub/data/gsod/2006/
+    - Non-FTP: http://www1.ncdc.noaa.gov/pub/data/gsod/2006
+- NOAA GSOD README
+    - FTP: ftp://ftp.ncdc.noaa.gov/pub/data/gsod/readme.txt
+    - Non-FTP: http://www1.ncdc.noaa.gov/pub/data/gsod/readme.txt
+- NOAA GSOD station info file
+    - FTP: ftp://ftp.ncdc.noaa.gov/pub/data/gsod/isd-history.csv
+    - Non-FTP: http://www1.ncdc.noaa.gov/pub/data/gsod/isd-history.csv
