@@ -36,7 +36,7 @@ downloadMetrics <- function(
                       method   = "auto",
                       mode     = "wb")
         
-        # Create folder for tarred files. Test to see if file for year already 
+        # Create folder for untarred files. Test to see if file for year already
         # exists. If it does, remove all files in that folder
         yrDir <- file.path(dirRawData, paste0("gsod_", yr))
         dirHasFiles <- file.exists(yrDir) && length(dir(yrDir)) > 0
