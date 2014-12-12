@@ -97,48 +97,77 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <p>This data set contains information on the weather stations, including their latitude and longitude coordinates.</p>
 <p>The weather stations are uniquely identified by the columns <code>USAF</code> and <code>WBAN</code>. <code>WBAN</code> matches with <code>WBAN</code> in the weather metrics data set, and <code>USAF</code> matches with <code>STN---</code>. This is a bit confusing, but don’t worry: the <code>mergeForLatLon</code> function performs this merge for you.</p>
 <p>The start and end dates of operation for each weather station are specified in the <code>START</code> and <code>END</code> columns.</p>
-<p>There are <a href="http://www1.ncdc.noaa.gov/pub/data/gsod/isd-history.csv">*.csv</a> and <a href="http://www1.ncdc.noaa.gov/pub/data/gsod/isd-history.txt">*.txt</a> versions of this file.</p></li>
+<p>The table comes as file types <a href="http://www1.ncdc.noaa.gov/pub/data/gsod/isd-history.csv">*.csv</a> and <a href="http://www1.ncdc.noaa.gov/pub/data/gsod/isd-history.txt">*.txt</a>.</p></li>
 </ol>
 </div>
 <div id="directory-structure" class="section level4">
 <h4>Directory structure</h4>
-<p>The data files and the R code should live in a strict directory structure (see below). The strict structure makes the R functions easier to use by requiring the user to specify one directory instead of many directories and file paths. The directory you’ll need to specify is the directory of this project. I’ll refer to this path as <span style="color:purple"><em>projDir</em></span> (for “project directory”) to keep it consistent with the <code>projDir</code> argument in each of the main R functions.</p>
+<p>The data files and the R code should live in a strict directory structure (see below). To make sure the R functions know where to look to source, download, and write data, set your working diectory to the “<span style="color:purple">weather-data</span>” folder. Alternatively, specify the <code>projDir</code> argument to the “<span style="color:purple">weather-data</span>” folder in each of the main R functions.</p>
 <p>The structure is as follows:</p>
 <ul>
-<li><span style="color:purple"><em>projDir</em>/</span> - project directory</li>
-<li><span style="color:purple"><em>projDir</em>/R/</span> - R functions</li>
-<li><span style="color:purple"><em>projDir</em>/rawData/</span> - raw data to be used in project (not yet created)</li>
-<li><span style="color:purple"><em>projDir</em>/rawData/gsod_<em>yyyy</em>/</span> - weather metric files (*.op.gz), by station for year <em>yyyy</em> (not yet created)</li>
-<li><span style="color:purple"><em>projDir</em>/rawData/gsod_<em>yyyy</em>/<em>ssssss</em>-<em>wwwww</em>-<em>yyyy</em>.op.gz</span> - weather metric file for station with identifiers <em>ssssss</em> (<code>STN---</code>) and <em>wwwww</em> (<code>WBAN</code>) for year <em>yyyy</em> (not yet downloaded)
+<li><span style="color:purple">weather-data/</span> - main project directory</li>
+<li><span style="color:purple">weather-data/R/</span> - R functions</li>
+<li><span style="color:purple">weather-data/rawData/</span> - raw data to be used in project (not yet created)</li>
+<li><span style="color:purple">weather-data/rawData/gsod_<em>yyyy</em>/</span> - weather metric files (*.op.gz), by station for year <em>yyyy</em> (not yet created)</li>
+<li><span style="color:purple">weather-data/rawData/gsod_<em>yyyy</em>/<em>ssssss</em>-<em>wwwww</em>-<em>yyyy</em>.op.gz</span> - weather metric file for station with identifiers <em>ssssss</em> (<code>STN---</code>) and <em>wwwww</em> (<code>WBAN</code>) for year <em>yyyy</em> (not yet downloaded)
 <ul>
 <li>E.g., the file 702035-26704-2006.op.gz would be for the station with a <code>STN---</code> identifier of 702035 and a <code>WBAN</code> identifier of 26704 in year 2006</li>
 </ul></li>
-<li><span style="color:purple"><em>projDir</em>/rawData/isd-history.csv</span> - weather station info file (*.csv) (not yet downloaded)</li>
+<li><span style="color:purple">weather-data/rawData/isd-history.csv</span> - weather station info file (*.csv) (not yet downloaded)</li>
 </ul>
 </div>
 <div id="example-r-code" class="section level4">
 <h4><a name="R"></a>Example R code</h4>
-<p>To run the main R functions, you’ll need to install the packages <code>data.table</code>, <code>foreach</code>, and <code>doParallel</code> if you haven’t done so. If you’d like to use <a href="#op1">Option 1</a> to download the weather metric data files, you’ll also need to install <code>RCurl</code>.</p>
+<p>To run the main R functions, you’ll need to install the packages <code>data.table</code>, <code>foreach</code>, and <code>doParallel</code>.</p>
 <pre class="r"><code># Define project directory and years you want to download and play with
-projDir &lt;- &quot;YourProjectDirectory&quot;
+setwd(&quot;ParentDirectories/weather-data&quot;)
 yrs &lt;- 2012:2013
 
 # Source main functions
-mainFuns &lt;- dir(file.path(projDir, &quot;R&quot;, &quot;main&quot;), &quot;\\.R&quot;, full.names = TRUE)
+mainFuns &lt;- dir(file.path(&quot;R&quot;, &quot;main&quot;), &quot;\\.R&quot;, full.names = TRUE)
 invisible(sapply(mainFuns, source))
 
 # Download data
-downloadMetrics(yrs, projDir)
-downloadStationInfo(projDir)
+downloadMetrics(yrs)  # Weather metrics (e.g., temp, precip)
+downloadStationInfo()  # Weather station info (e.g., lat/lon)
 
 # Calculate pleasant days per year for each weather station
-metricsRaw &lt;- readMetrics(yrs, projDir)  # Read in data
-metricsClean &lt;- cleanMetrics(metricsRaw, projDir)  # Clean data
-pleasant &lt;- calcPleasantDays(metricsClean, projDir)  # Calculate pleasant days
-latlon &lt;- mergeForLatLon(pleasant, projDir)  # Get lat/lon coords
+metricsRaw &lt;- readMetrics(yrs)  # Read in data
+metricsClean &lt;- cleanMetrics(metricsRaw)  # Clean data, subset for relevant cols
+pleasant &lt;- calcPleasantDays(metricsClean)  # Calculate pleasant days
+latlon &lt;- mergeForLatLon(pleasant)  # Get lat/lon coords
 
 head(latlon)</code></pre>
-<p><strong>T-SQL bonus code:</strong> If you save the raw data (the <code>metricsRaw</code> object in the R code above) to a SQL database, then you can calculate the number of pleasant days by weather station by using the T-SQL code below. Let <code>YourDbName</code> be the name of your database, <code>WeatherStationMetricsRaw</code> be the name of your weather metrics table (again, <code>metricsRaw</code> from above), and <code>WeatherStations</code> be the name of the station info table (i.e., <span style="color:purple"><em>projDir</em>/rawData/isd-history.csv</span>).</p>
+<p>(I initially used the Command Prompt to download and unpack the *.tar files, but then decided to use R’s <code>untar</code> function after I saw Fabio Veronesi’s blog post on <a href="http://r-video-tutorial.blogspot.com/2014/12/accessing-cleaning-and-plotting-noaa.html">Accessing, cleaning and plotting NOAA Temperature Data</a>. Thanks, Fabio!)</p>
+</div>
+<div id="sources-and-resources" class="section level4">
+<h4><a name="sourcesAndResources"></a> Sources and resources</h4>
+<ul>
+<li>NOAA GSOD main site
+<ul>
+<li>FTP: <a href="ftp://ftp.ncdc.noaa.gov/pub/data/gsod/">ftp://ftp.ncdc.noaa.gov/pub/data/gsod/</a></li>
+<li>Non-FTP: <a href="http://www1.ncdc.noaa.gov/pub/data/gsod/">http://www1.ncdc.noaa.gov/pub/data/gsod/</a></li>
+</ul></li>
+<li>NOAA GSOD data for year 2006 (replace year with year of interest)
+<ul>
+<li>FTP: <a href="ftp://ftp.ncdc.noaa.gov/pub/data/gsod/2006/">ftp://ftp.ncdc.noaa.gov/pub/data/gsod/2006/</a></li>
+<li>Non-FTP: <a href="http://www1.ncdc.noaa.gov/pub/data/gsod/2006">http://www1.ncdc.noaa.gov/pub/data/gsod/2006</a></li>
+</ul></li>
+<li>NOAA GSOD README
+<ul>
+<li>FTP: <a href="ftp://ftp.ncdc.noaa.gov/pub/data/gsod/readme.txt">ftp://ftp.ncdc.noaa.gov/pub/data/gsod/readme.txt</a></li>
+<li>Non-FTP: <a href="http://www1.ncdc.noaa.gov/pub/data/gsod/readme.txt">http://www1.ncdc.noaa.gov/pub/data/gsod/readme.txt</a></li>
+</ul></li>
+<li>NOAA GSOD station info file
+<ul>
+<li>FTP: <a href="ftp://ftp.ncdc.noaa.gov/pub/data/gsod/isd-history.csv">ftp://ftp.ncdc.noaa.gov/pub/data/gsod/isd-history.csv</a></li>
+<li>Non-FTP: <a href="http://www1.ncdc.noaa.gov/pub/data/gsod/isd-history.csv">http://www1.ncdc.noaa.gov/pub/data/gsod/isd-history.csv</a></li>
+</ul></li>
+</ul>
+</div>
+<div id="t-sql-bonus-code" class="section level4">
+<h4>T-SQL bonus code</h4>
+<p>If you save the raw data (the <code>metricsRaw</code> object in the R code above) to a SQL database, then you can calculate the number of pleasant days by weather station by using the T-SQL code below. Let <code>YourDbName</code> be the name of your database, <code>WeatherStationMetricsRaw</code> be the name of your weather metrics table (again, <code>metricsRaw</code> from above), and <code>WeatherStations</code> be the name of the station info table (i.e., <span style="color:purple">weather-data/rawData/isd-history.csv</span>).</p>
 <pre class="sql"><code>-- Declare variables for data pull.
 DECLARE @YearStart INT = 2011;
 DECLARE @YearEnd INT = 2013;
@@ -194,31 +223,6 @@ SELECT p.STN, p.WBAN, ws.LAT, ws.LON
    AND NOT(ws.LAT = 0 AND ws.LON = 0)
  GROUP BY p.STN, p.WBAN, ws.LAT, ws.LON
 HAVING COUNT(p.PleasantAvg) = 365</code></pre>
-</div>
-<div id="sources-and-resources" class="section level4">
-<h4><a name="sourcesAndResources"></a> Sources and resources</h4>
-<ul>
-<li>NOAA GSOD main site
-<ul>
-<li>FTP: <a href="ftp://ftp.ncdc.noaa.gov/pub/data/gsod/">ftp://ftp.ncdc.noaa.gov/pub/data/gsod/</a></li>
-<li>Non-FTP: <a href="http://www1.ncdc.noaa.gov/pub/data/gsod/">http://www1.ncdc.noaa.gov/pub/data/gsod/</a></li>
-</ul></li>
-<li>NOAA GSOD data for year 2006 (replace year with year of interest)
-<ul>
-<li>FTP: <a href="ftp://ftp.ncdc.noaa.gov/pub/data/gsod/2006/">ftp://ftp.ncdc.noaa.gov/pub/data/gsod/2006/</a></li>
-<li>Non-FTP: <a href="http://www1.ncdc.noaa.gov/pub/data/gsod/2006">http://www1.ncdc.noaa.gov/pub/data/gsod/2006</a></li>
-</ul></li>
-<li>NOAA GSOD README
-<ul>
-<li>FTP: <a href="ftp://ftp.ncdc.noaa.gov/pub/data/gsod/readme.txt">ftp://ftp.ncdc.noaa.gov/pub/data/gsod/readme.txt</a></li>
-<li>Non-FTP: <a href="http://www1.ncdc.noaa.gov/pub/data/gsod/readme.txt">http://www1.ncdc.noaa.gov/pub/data/gsod/readme.txt</a></li>
-</ul></li>
-<li>NOAA GSOD station info file
-<ul>
-<li>FTP: <a href="ftp://ftp.ncdc.noaa.gov/pub/data/gsod/isd-history.csv">ftp://ftp.ncdc.noaa.gov/pub/data/gsod/isd-history.csv</a></li>
-<li>Non-FTP: <a href="http://www1.ncdc.noaa.gov/pub/data/gsod/isd-history.csv">http://www1.ncdc.noaa.gov/pub/data/gsod/isd-history.csv</a></li>
-</ul></li>
-</ul>
 </div>
 </div>
 </div>

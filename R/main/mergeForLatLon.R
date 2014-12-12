@@ -1,4 +1,4 @@
-mergeForLatLon <- function(pleasant, projDir, isDebug = TRUE)
+mergeForLatLon <- function(pleasant, projDir = getwd(), isDebug = TRUE)
 
 {
     # ######################################################################### 

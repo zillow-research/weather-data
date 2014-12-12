@@ -1,6 +1,6 @@
 readMetrics <- function(
     yrs,                                        # Years of raw data to read in.
-    projDir,
+    projDir = getwd(),
     isDebug = TRUE,                             # Show debug statements?
     nodes = max(1, floor(detectCores() * 4/5))  # No. of clusters to be used.
 )

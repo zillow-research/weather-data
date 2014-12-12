@@ -1,6 +1,6 @@
 cleanMetrics <- function(
     metricsRaw,
-    projDir,
+    projDir = getwd(),
     isDebug = TRUE
 )
 

@@ -1,6 +1,6 @@
 calcPleasantDays <- function(
     metricsClean,
-    projDir,
+    projDir = getwd(),
     meanTempRange = c(55, 75),  # Upper and lower limits on mean temp
     minTempThresh = 45,         # Lower limit for min temp
     maxTempThresh = 85,         # Upper limit for max temp

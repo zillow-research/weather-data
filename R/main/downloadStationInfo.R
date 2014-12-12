@@ -1,4 +1,4 @@
-downloadStationInfo <- function(projDir, isDebug = TRUE)
+downloadStationInfo <- function(projDir = getwd(), isDebug = TRUE)
     
 {
     # ######################################################################### 

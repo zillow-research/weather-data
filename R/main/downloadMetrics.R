@@ -1,6 +1,6 @@
 downloadMetrics <- function(
     yrs,
-    projDir,
+    projDir = getwd(),
     isDebug = TRUE
 )
     
