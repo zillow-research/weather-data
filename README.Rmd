@@ -38,7 +38,7 @@ The [Global Summary of Day (GSOD)](https://data.noaa.gov/dataset/global-surface-
 
     The weather stations are uniquely identified by the columns `STN---` and `WBAN`, and the date is identified by the columns `YEAR` and `MODA` (month and day).
 
-    Missing codes for the weather variables are a bit tricky to deal with, so the `cleanMetrics` function in the [example R code](#R) turns them into `NA`s for easier handling.
+    Missing codes for the weather variables are a bit tricky to deal with, so the `cleanMetrics` function turns them into `NA`s for easier handling (see [example R code](#R)).
 
     For more info, check out NOAA's [README on GSOD data](http://www1.ncdc.noaa.gov/pub/data/gsod/readme.txt).
 
@@ -157,8 +157,10 @@ HAVING COUNT(p.PleasantAvg) = 365
 
 
 #### <a name="sourcesAndResources"></a> Sources and resources
- 
-* NOAA GSOD main FTP site: [FTP](ftp://ftp.ncdc.noaa.gov/pub/data/gsod/)
-* NOAA GSOD data for year 2006 (replace year with year of interest): [ftp://ftp.ncdc.noaa.gov/pub/data/gsod/2006/](ftp://ftp.ncdc.noaa.gov/pub/data/gsod/2006/)
-* NOAA GSOD README: [ftp://ftp.ncdc.noaa.gov/pub/data/gsod/readme.txt](ftp://ftp.ncdc.noaa.gov/pub/data/gsod/readme.txt)
-* NOAA GSOD station info file: [ftp://ftp.ncdc.noaa.gov/pub/data/gsod/isd-history.csv](ftp://ftp.ncdc.noaa.gov/pub/data/gsod/isd-history.csv)
+
+| Site or file description                                          | FTP link                                              | Non-FTP link                                            |
+|-------------------------------------------------------------------|-------------------------------------------------------|---------------------------------------------------------|
+| NOAA GSOD main site                                               | ftp://ftp.ncdc.noaa.gov/pub/data/gsod/                | http://www1.ncdc.noaa.gov/pub/data/gsod/                |
+| NOAA GSOD data for year 2006 (replace year with year of interest) | ftp://ftp.ncdc.noaa.gov/pub/data/gsod/2006/           | http://www1.ncdc.noaa.gov/pub/data/gsod/2006            |
+| NOAA GSOD README                                                  | ftp://ftp.ncdc.noaa.gov/pub/data/gsod/readme.txt      | http://www1.ncdc.noaa.gov/pub/data/gsod/readme.txt      |
+| NOAA GSOD station info file                                       | ftp://ftp.ncdc.noaa.gov/pub/data/gsod/isd-history.csv | http://www1.ncdc.noaa.gov/pub/data/gsod/isd-history.csv |
