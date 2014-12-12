@@ -92,7 +92,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 </ul>
 <p>The weather stations are uniquely identified by the columns <code>STN---</code> and <code>WBAN</code>, and the date is identified by the columns <code>YEAR</code> and <code>MODA</code> (month and day).</p>
 <p>Missing codes for the weather variables are a bit tricky to deal with, so the <code>cleanMetrics</code> function in the <a href="#R">example R code</a> turns them into <code>NA</code>s for easier handling.</p>
-<p>For more info, check out NOAA’s <a href="http://www1.ncdc.noaa.gov/pub/data/gsod/readme.txt">README on GSOD data</a>, which I also linked to in <a href="#sourcesAndResources">Sources and resources</a>.</p></li>
+<p>For more info, check out NOAA’s <a href="http://www1.ncdc.noaa.gov/pub/data/gsod/readme.txt">README on GSOD data</a>.</p></li>
 <li><p><strong>Weather station info data set</strong></p>
 <p>This data set contains information on the weather stations, including their latitude and longitude coordinates.</p>
 <p>The weather stations are uniquely identified by the columns <code>USAF</code> and <code>WBAN</code>. <code>WBAN</code> matches with <code>WBAN</code> in the weather metrics data set, and <code>USAF</code> matches with <code>STN---</code>. This is a bit confusing, but don’t worry: the <code>mergeForLatLon</code> function performs this merge for you.</p>
@@ -198,7 +198,7 @@ HAVING COUNT(p.PleasantAvg) = 365</code></pre>
 <div id="sources-and-resources" class="section level4">
 <h4><a name="sourcesAndResources"></a> Sources and resources</h4>
 <ul>
-<li>NOAA GSOD main FTP site: <a href="ftp://ftp.ncdc.noaa.gov/pub/data/gsod/"><a href="ftp://ftp.ncdc.noaa.gov/pub/data/gsod/">ftp://ftp.ncdc.noaa.gov/pub/data/gsod/</a></a></li>
+<li>NOAA GSOD main FTP site: <a href="ftp://ftp.ncdc.noaa.gov/pub/data/gsod/">FTP</a></li>
 <li>NOAA GSOD data for year 2006 (replace year with year of interest): <a href="ftp://ftp.ncdc.noaa.gov/pub/data/gsod/2006/"><a href="ftp://ftp.ncdc.noaa.gov/pub/data/gsod/2006/">ftp://ftp.ncdc.noaa.gov/pub/data/gsod/2006/</a></a></li>
 <li>NOAA GSOD README: <a href="ftp://ftp.ncdc.noaa.gov/pub/data/gsod/readme.txt"><a href="ftp://ftp.ncdc.noaa.gov/pub/data/gsod/readme.txt">ftp://ftp.ncdc.noaa.gov/pub/data/gsod/readme.txt</a></a></li>
 <li>NOAA GSOD station info file: <a href="ftp://ftp.ncdc.noaa.gov/pub/data/gsod/isd-history.csv"><a href="ftp://ftp.ncdc.noaa.gov/pub/data/gsod/isd-history.csv">ftp://ftp.ncdc.noaa.gov/pub/data/gsod/isd-history.csv</a></a></li>
