@@ -63,10 +63,10 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 </div>
 <div id="brief-explanation-of-the-data" class="section level4">
 <h4>Brief explanation of the data</h4>
-<p>The Global Summary of Day (GSOD) data is just one of many data products by the National Oceanic and Atmospheric Administration (NOAA). There are two data sets that must be joined in order to conduct a meaningful analysis using the data:</p>
+<p>The <a href="https://data.noaa.gov/dataset/global-surface-summary-of-the-day-gsod">Global Summary of Day (GSOD)</a> data is just one of many data products by the National Oceanic and Atmospheric Administration (NOAA). There are two data sets that must be joined in order to conduct a meaningful analysis using the data:</p>
 <ol style="list-style-type: decimal">
 <li><p><strong>Weather metrics data set</strong></p>
-<p>This is the bulk of the data, and it’s what you’ll spend the most time downloading, importing, and cleaning. It contains the following metrics, which are available at the daily level for each of the 9000+ weather stations:</p>
+<p>It’s is the bulk of the data, and it’s what you’ll spend the most time downloading, importing, and cleaning. It contains the following metrics, which are available at the daily level for each of the 9000+ weather stations:</p>
 <ul>
 <li>Mean temperature (.1 Fahrenheit)</li>
 <li>Mean dew point (.1 Fahrenheit)</li>
@@ -91,11 +91,13 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 </ul></li>
 </ul>
 <p>The weather stations are uniquely identified by the columns <code>STN---</code> and <code>WBAN</code>, and the date is identified by the columns <code>YEAR</code> and <code>MODA</code> (month and day).</p>
-<p>Missing codes for the weather variables are a bit tricky to deal with, so the <code>cleanMetrics</code> function in the <a href="#R">example R code</a> turns them into <code>NA</code>s for easier handling.</p></li>
+<p>Missing codes for the weather variables are a bit tricky to deal with, so the <code>cleanMetrics</code> function in the <a href="#R">example R code</a> turns them into <code>NA</code>s for easier handling.</p>
+<p>For more info, check out NOAA’s <a href="ftp://ftp.ncdc.noaa.gov/pub/data/gsod/readme.txt">README on GSOD data</a>, which I also linked to in <a href="#sourcesAndResources">Sources and resources</a>.</p></li>
 <li><p><strong>Weather station info data set</strong></p>
 <p>This data set contains information on the weather stations, including their latitude and longitude coordinates.</p>
 <p>The weather stations are uniquely identified by the columns <code>USAF</code> and <code>WBAN</code>. <code>WBAN</code> matches with <code>WBAN</code> in the weather metrics data set, and <code>USAF</code> matches with <code>STN---</code>. This is a bit confusing, but don’t worry: the <code>mergeForLatLon</code> function performs this merge for you.</p>
-<p>The start and end dates of operation for each weather station are specified in the <code>START</code> and <code>END</code> columns.</p></li>
+<p>The start and end dates of operation for each weather station are specified in the <code>START</code> and <code>END</code> columns.</p>
+<p>There are <a href="ftp://ftp.ncdc.noaa.gov/pub/data/gsod/isd-history.csv">*.csv</a> and <a href="ftp://ftp.ncdc.noaa.gov/pub/data/gsod/isd-history.txt">*.txt</a> versions of this file.</p></li>
 </ol>
 </div>
 <div id="directory-structure" class="section level4">
@@ -114,34 +116,6 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <li><span style="color:purple"><em>projDir</em>/rawData/isd-history.csv</span> - weather station info file (*.csv) (not yet downloaded)</li>
 </ul>
 </div>
-<div id="instructions" class="section level4">
-<h4><a name="instructions"></a> Instructions</h4>
-<ol style="list-style-type: decimal">
-<li><p>Download the weather metrics data from FTP site (see <a href="#sourcesAndResources">Sources and resources</a>) into <span style="color:purple"><em>projDir</em>/rawData/</span> using one of the options below. Each option requires that you specify your email address to pull data from the FTP. You don’t have to create an account beforehand. There’s one *.tar file for each year of data, and 9000+ *op.gz files (one for each station) within each *.tar file.</p>
-<p><a name="op1"></a><strong>Option 1:</strong> Use function <code>downloadMetrics</code>, which downloads the individual station files (*.op.gz) from the FTP site, with the option of only downloading a certain number of files (<code>nFiles</code> argument). This is far from the fastest solution if you want to download a lot of data, but it will allow you to quickly import a handful of files for testing or debugging. (See <a href="#R">example R code</a>.)</p>
-<p><a name="op2"></a><strong>Option 2:</strong> Download and unpack *.tar from the FTP site using the code below in Command Prompt (Windows) or Terminal (OSX). In the code, replace the example project directory (<span style="color:purple">C:/Users/UserName/SomeOtherFolder/WeatherData</span>) with your project directory (i.e., the <code>projDir</code> path), the year (2006) with your desired year, and the email address (<a href="mailto:YourEmailAddress@domain">YourEmailAddress@domain</a>) with your email address. The last line of code was written on OSX, but it should work on Windows if you have MinGW/MSYS or Cygwin installed. This option is magnitudes faster than <a href="#op1">Option 1</a> but requires that you download an entire year of data at once.</p>
-<pre><code>mkdir C:\Users\UserName\SomeOtherFolder\WeatherData\rawData\gsod_2006
-cd C:\Users\UserName\SomeOtherFolder\WeatherData\rawData
-ftp
-open ftp.ncdc.noaa.gov
-ftp
-YourEmailAddress@domain
-cd /pub/data/gsod/2006
-get gsod_2006.tar
-bye
-tar -xjf gsod_2006.tar -C gsod_2006/</code></pre></li>
-<li><p>Use main R functions to read the weather data, clean it, calculate the number of pleasant days per year, and merge with station info data set to get latitude and longitude coordinates. See <a href="#R">example R code</a>.</p></li>
-</ol>
-</div>
-<div id="sources-and-resources" class="section level4">
-<h4><a name="sourcesAndResources"></a> Sources and resources</h4>
-<ul>
-<li>NOAA GSOD main FTP site: <a href="ftp://ftp.ncdc.noaa.gov/pub/data/gsod/"><a href="ftp://ftp.ncdc.noaa.gov/pub/data/gsod/">ftp://ftp.ncdc.noaa.gov/pub/data/gsod/</a></a></li>
-<li>NOAA GSOD data for year 2006 (replace year with year of interest): <a href="ftp://ftp.ncdc.noaa.gov/pub/data/gsod/2006/"><a href="ftp://ftp.ncdc.noaa.gov/pub/data/gsod/2006/">ftp://ftp.ncdc.noaa.gov/pub/data/gsod/2006/</a></a></li>
-<li>NOAA GSOD README: <a href="ftp://ftp.ncdc.noaa.gov/pub/data/gsod/readme.txt"><a href="ftp://ftp.ncdc.noaa.gov/pub/data/gsod/readme.txt">ftp://ftp.ncdc.noaa.gov/pub/data/gsod/readme.txt</a></a></li>
-<li>NOAA GSOD station info file: <a href="ftp://ftp.ncdc.noaa.gov/pub/data/gsod/isd-history.csv"><a href="ftp://ftp.ncdc.noaa.gov/pub/data/gsod/isd-history.csv">ftp://ftp.ncdc.noaa.gov/pub/data/gsod/isd-history.csv</a></a></li>
-</ul>
-</div>
 <div id="example-r-code" class="section level4">
 <h4><a name="R"></a>Example R code</h4>
 <p>To run the main R functions, you’ll need to install the packages <code>data.table</code>, <code>foreach</code>, and <code>doParallel</code> if you haven’t done so. If you’d like to use <a href="#op1">Option 1</a> to download the weather metric data files, you’ll also need to install <code>RCurl</code>.</p>
@@ -153,16 +127,8 @@ yrs &lt;- 2012:2013
 mainFuns &lt;- dir(file.path(projDir, &quot;R&quot;, &quot;main&quot;), &quot;\\.R&quot;, full.names = TRUE)
 invisible(sapply(mainFuns, source))
 
-# Download data for specified years (Option 1 for downloading files). Specify 
-# nFiles for testing. If you get the error &quot;Got a 530 ftp-server response when
-# 220 was expected&quot;, wait a few seconds and try again. If it doesn't work after
-# a few attempts, narrow your download to one year at a time if you're trying to
-# pull for multiple years.
-email &lt;- &quot;YourEmailAddress@domain&quot;
-nFiles &lt;- 10
-fwfs &lt;- downloadMetrics(yrs, projDir, email, nFiles)
-
-# Download station info file
+# Download data
+downloadMetrics(yrs, projDir)
 downloadStationInfo(projDir)
 
 # Calculate pleasant days per year for each weather station
@@ -228,6 +194,15 @@ SELECT p.STN, p.WBAN, ws.LAT, ws.LON
    AND NOT(ws.LAT = 0 AND ws.LON = 0)
  GROUP BY p.STN, p.WBAN, ws.LAT, ws.LON
 HAVING COUNT(p.PleasantAvg) = 365</code></pre>
+</div>
+<div id="sources-and-resources" class="section level4">
+<h4><a name="sourcesAndResources"></a> Sources and resources</h4>
+<ul>
+<li>NOAA GSOD main FTP site: <a href="ftp://ftp.ncdc.noaa.gov/pub/data/gsod/"><a href="ftp://ftp.ncdc.noaa.gov/pub/data/gsod/">ftp://ftp.ncdc.noaa.gov/pub/data/gsod/</a></a></li>
+<li>NOAA GSOD data for year 2006 (replace year with year of interest): <a href="ftp://ftp.ncdc.noaa.gov/pub/data/gsod/2006/"><a href="ftp://ftp.ncdc.noaa.gov/pub/data/gsod/2006/">ftp://ftp.ncdc.noaa.gov/pub/data/gsod/2006/</a></a></li>
+<li>NOAA GSOD README: <a href="ftp://ftp.ncdc.noaa.gov/pub/data/gsod/readme.txt"><a href="ftp://ftp.ncdc.noaa.gov/pub/data/gsod/readme.txt">ftp://ftp.ncdc.noaa.gov/pub/data/gsod/readme.txt</a></a></li>
+<li>NOAA GSOD station info file: <a href="ftp://ftp.ncdc.noaa.gov/pub/data/gsod/isd-history.csv"><a href="ftp://ftp.ncdc.noaa.gov/pub/data/gsod/isd-history.csv">ftp://ftp.ncdc.noaa.gov/pub/data/gsod/isd-history.csv</a></a></li>
+</ul>
 </div>
 </div>
 </div>

@@ -10,11 +10,11 @@ Our approach was very much inspired by Kelly Norton's blog post [The Pleasant Pl
 
 #### Brief explanation of the data
 
-The Global Summary of Day (GSOD) data is just one of many data products by the National Oceanic and Atmospheric Administration (NOAA). There are two data sets that must be joined in order to conduct a meaningful analysis using the data:
+The [Global Summary of Day (GSOD)](https://data.noaa.gov/dataset/global-surface-summary-of-the-day-gsod) data is just one of many data products by the National Oceanic and Atmospheric Administration (NOAA). There are two data sets that must be joined in order to conduct a meaningful analysis using the data:
 
 1. **Weather metrics data set**
-
-    This is the bulk of the data, and it's what you'll spend the most time downloading, importing, and cleaning. It contains the following metrics, which are available at the daily level for each of the 9000+ weather stations:
+    
+    It's is the bulk of the data, and it's what you'll spend the most time downloading, importing, and cleaning. It contains the following metrics, which are available at the daily level for each of the 9000+ weather stations:
 
     - Mean temperature (.1 Fahrenheit)
     - Mean dew point (.1 Fahrenheit)
@@ -40,6 +40,7 @@ The Global Summary of Day (GSOD) data is just one of many data products by the N
 
     Missing codes for the weather variables are a bit tricky to deal with, so the `cleanMetrics` function in the [example R code](#R) turns them into `NA`s for easier handling.
 
+    For more info, check out NOAA's [README on GSOD data](ftp://ftp.ncdc.noaa.gov/pub/data/gsod/readme.txt), which I also linked to in [Sources and resources](#sourcesAndResources).
 
 2. **Weather station info data set**
 
@@ -48,6 +49,8 @@ The Global Summary of Day (GSOD) data is just one of many data products by the N
     The weather stations are uniquely identified by the columns `USAF` and `WBAN`. `WBAN` matches with `WBAN` in the weather metrics data set, and `USAF` matches with `STN---`. This is a bit confusing, but don't worry: the `mergeForLatLon` function performs this merge for you.
 
     The start and end dates of operation for each weather station are specified in the `START` and `END` columns.
+    
+    There are [*.csv](ftp://ftp.ncdc.noaa.gov/pub/data/gsod/isd-history.csv) and [*.txt](ftp://ftp.ncdc.noaa.gov/pub/data/gsod/isd-history.txt) versions of this file.
 
 
 #### Directory structure
@@ -65,38 +68,6 @@ The structure is as follows:
 - <span style="color:purple">*projDir*/rawData/isd-history.csv</span> - weather station info file (\*.csv) (not yet downloaded)
 
 
-#### <a name="instructions"></a> Instructions
-
-1. Download the weather metrics data from FTP site (see [Sources and resources](#sourcesAndResources)) into <span style="color:purple">*projDir*/rawData/</span> using one of the options below. Each option requires that you specify your email address to pull data from the FTP. You don't have to create an account beforehand. There's one \*.tar file for each year of data, and 9000+ \*op.gz files (one for each station) within each \*.tar file.
-
-    <a name="op1"></a>**Option 1:** Use function `downloadMetrics`, which downloads the individual station files (\*.op.gz) from the FTP site, with the option of only downloading a certain number of files (`nFiles` argument). This is far from the fastest solution if you want to download a lot of data, but it will allow you to quickly import a handful of files for testing or debugging. (See [example R code](#R).)
-    
-    <a name="op2"></a>**Option 2:** Download and unpack \*.tar from the FTP site using the code below in Command Prompt (Windows) or Terminal (OSX). In the code, replace the example project directory (<span style="color:purple">C:/Users/UserName/SomeOtherFolder/WeatherData</span>) with your project directory (i.e., the `projDir` path), the year (2006) with your desired year, and the email address (YourEmailAddress@domain) with your email address. The last line of code was written on OSX, but it should work on Windows if you have MinGW/MSYS or Cygwin installed. This option is magnitudes faster than [Option 1](#op1) but requires that you download an entire year of data at once. 
-
-    ```
-    mkdir C:\Users\UserName\SomeOtherFolder\WeatherData\rawData\gsod_2006
-    cd C:\Users\UserName\SomeOtherFolder\WeatherData\rawData
-    ftp
-    open ftp.ncdc.noaa.gov
-    ftp
-    YourEmailAddress@domain
-    cd /pub/data/gsod/2006
-    get gsod_2006.tar
-    bye
-    tar -xjf gsod_2006.tar -C gsod_2006/
-    ```
-    
-2. Use main R functions to read the weather data, clean it, calculate the number of pleasant days per year, and merge with station info data set to get latitude and longitude coordinates. See [example R code](#R).
-
-
-#### <a name="sourcesAndResources"></a> Sources and resources
-
-* NOAA GSOD main FTP site: [ftp://ftp.ncdc.noaa.gov/pub/data/gsod/](ftp://ftp.ncdc.noaa.gov/pub/data/gsod/)
-* NOAA GSOD data for year 2006 (replace year with year of interest): [ftp://ftp.ncdc.noaa.gov/pub/data/gsod/2006/](ftp://ftp.ncdc.noaa.gov/pub/data/gsod/2006/)
-* NOAA GSOD README: [ftp://ftp.ncdc.noaa.gov/pub/data/gsod/readme.txt](ftp://ftp.ncdc.noaa.gov/pub/data/gsod/readme.txt)
-* NOAA GSOD station info file: [ftp://ftp.ncdc.noaa.gov/pub/data/gsod/isd-history.csv](ftp://ftp.ncdc.noaa.gov/pub/data/gsod/isd-history.csv) 
-
-
 #### <a name="R"></a>Example R code
 
 To run the main R functions, you'll need to install the packages `data.table`, `foreach`, and `doParallel` if you haven't done so. If you'd like to use [Option 1](#op1) to download the weather metric data files, you'll also need to install `RCurl`.
@@ -110,16 +81,8 @@ yrs <- 2012:2013
 mainFuns <- dir(file.path(projDir, "R", "main"), "\\.R", full.names = TRUE)
 invisible(sapply(mainFuns, source))
 
-# Download data for specified years (Option 1 for downloading files). Specify 
-# nFiles for testing. If you get the error "Got a 530 ftp-server response when
-# 220 was expected", wait a few seconds and try again. If it doesn't work after
-# a few attempts, narrow your download to one year at a time if you're trying to
-# pull for multiple years.
-email <- "YourEmailAddress@domain"
-nFiles <- 10
-fwfs <- downloadMetrics(yrs, projDir, email, nFiles)
-
-# Download station info file
+# Download data
+downloadMetrics(yrs, projDir)
 downloadStationInfo(projDir)
 
 # Calculate pleasant days per year for each weather station
@@ -191,3 +154,11 @@ SELECT p.STN, p.WBAN, ws.LAT, ws.LON
  GROUP BY p.STN, p.WBAN, ws.LAT, ws.LON
 HAVING COUNT(p.PleasantAvg) = 365
 ```
+
+
+#### <a name="sourcesAndResources"></a> Sources and resources
+
+* NOAA GSOD main FTP site: [ftp://ftp.ncdc.noaa.gov/pub/data/gsod/](ftp://ftp.ncdc.noaa.gov/pub/data/gsod/)
+* NOAA GSOD data for year 2006 (replace year with year of interest): [ftp://ftp.ncdc.noaa.gov/pub/data/gsod/2006/](ftp://ftp.ncdc.noaa.gov/pub/data/gsod/2006/)
+* NOAA GSOD README: [ftp://ftp.ncdc.noaa.gov/pub/data/gsod/readme.txt](ftp://ftp.ncdc.noaa.gov/pub/data/gsod/readme.txt)
+* NOAA GSOD station info file: [ftp://ftp.ncdc.noaa.gov/pub/data/gsod/isd-history.csv](ftp://ftp.ncdc.noaa.gov/pub/data/gsod/isd-history.csv)
