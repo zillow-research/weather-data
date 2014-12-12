@@ -40,7 +40,7 @@ The [Global Summary of Day (GSOD)](https://data.noaa.gov/dataset/global-surface-
 
     Missing codes for the weather variables are a bit tricky to deal with, so the `cleanMetrics` function in the [example R code](#R) turns them into `NA`s for easier handling.
 
-    For more info, check out NOAA's [README on GSOD data](ftp://ftp.ncdc.noaa.gov/pub/data/gsod/readme.txt), which I also linked to in [Sources and resources](#sourcesAndResources).
+    For more info, check out NOAA's [README on GSOD data](http://www1.ncdc.noaa.gov/pub/data/gsod/readme.txt), which I also linked to in [Sources and resources](#sourcesAndResources).
 
 2. **Weather station info data set**
 
@@ -50,7 +50,7 @@ The [Global Summary of Day (GSOD)](https://data.noaa.gov/dataset/global-surface-
 
     The start and end dates of operation for each weather station are specified in the `START` and `END` columns.
     
-    There are [*.csv](ftp://ftp.ncdc.noaa.gov/pub/data/gsod/isd-history.csv) and [*.txt](ftp://ftp.ncdc.noaa.gov/pub/data/gsod/isd-history.txt) versions of this file.
+    There are [\*.csv](ftp://ftp.ncdc.noaa.gov/pub/data/gsod/isd-history.csv) and [\*.txt](ftp://ftp.ncdc.noaa.gov/pub/data/gsod/isd-history.txt) versions of this file.
 
 
 #### Directory structure

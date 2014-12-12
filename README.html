@@ -92,7 +92,7 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 </ul>
 <p>The weather stations are uniquely identified by the columns <code>STN---</code> and <code>WBAN</code>, and the date is identified by the columns <code>YEAR</code> and <code>MODA</code> (month and day).</p>
 <p>Missing codes for the weather variables are a bit tricky to deal with, so the <code>cleanMetrics</code> function in the <a href="#R">example R code</a> turns them into <code>NA</code>s for easier handling.</p>
-<p>For more info, check out NOAA’s <a href="ftp://ftp.ncdc.noaa.gov/pub/data/gsod/readme.txt">README on GSOD data</a>, which I also linked to in <a href="#sourcesAndResources">Sources and resources</a>.</p></li>
+<p>For more info, check out NOAA’s <a href="http://www1.ncdc.noaa.gov/pub/data/gsod/readme.txt">README on GSOD data</a>, which I also linked to in <a href="#sourcesAndResources">Sources and resources</a>.</p></li>
 <li><p><strong>Weather station info data set</strong></p>
 <p>This data set contains information on the weather stations, including their latitude and longitude coordinates.</p>
 <p>The weather stations are uniquely identified by the columns <code>USAF</code> and <code>WBAN</code>. <code>WBAN</code> matches with <code>WBAN</code> in the weather metrics data set, and <code>USAF</code> matches with <code>STN---</code>. This is a bit confusing, but don’t worry: the <code>mergeForLatLon</code> function performs this merge for you.</p>
