@@ -50,7 +50,7 @@ The [Global Summary of Day (GSOD)](https://data.noaa.gov/dataset/global-surface-
 
     The start and end dates of operation for each weather station are specified in the `START` and `END` columns.
     
-    There are [\*.csv](ftp://ftp.ncdc.noaa.gov/pub/data/gsod/isd-history.csv) and [\*.txt](ftp://ftp.ncdc.noaa.gov/pub/data/gsod/isd-history.txt) versions of this file.
+    There are [\*.csv](http://www1.ncdc.noaa.gov/pub/data/gsod/isd-history.csv) and [\*.txt](http://www1.ncdc.noaa.gov/pub/data/gsod/isd-history.txt) versions of this file.
 
 
 #### Directory structure
